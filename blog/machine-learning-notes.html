@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Adam Novotny">
-    <meta name="description" content="1 | Problem framing and experimental design Specify prediction target, prediction time, observation unit, decision threshold, intervention,...">
+    <meta name="description" content="1 | Problem framing and experimental design Specify prediction target, prediction time, decision threshold, intervention, utility and the cost of...">
     <title>Machine Learning Notes | ANotes</title>
     <link rel="icon" type="image/png" sizes="32x32" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/favicon.png">
 <link rel="canonical" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/blog/machine-learning-notes.html">
@@ -56,7 +56,7 @@
 <main class="container">
     <div class="row">
         <div class="col"></div>
-        <div class="col-md-12">
+        <div class="col-md-10">
     
             <div class="blog-post">
             <h2 class="blog-post-title">Machine Learning Notes</h2>
@@ -66,10 +66,10 @@
             <h4>1 | Problem framing and experimental design</h4>
 <ul>
 <li>
-<p>Specify prediction target, prediction time, observation unit, decision threshold, intervention, utility and the cost of errors. Classify as regression, ranking, classification, forecasting, survival, clustering, anomaly detection or causal estimation.</p>
+<p>Specify prediction target, prediction time, decision threshold, intervention, utility and the cost of errors. Classify as regression, ranking, classification, forecasting, clustering, anomaly detection or causal estimation.</p>
 </li>
 <li>
-<p>Choose a meaningful minimum baseline: majority class, mean/median, seasonal naïve, last value, simple rule, or regularized linear model. Define the business metric separately from the surrogate training loss.</p>
+<p>Choose a meaningful minimum baseline: majority class, mean/median, seasonal naive, last value, simple rule, or regularized linear model. Define the business metric separately from the surrogate training loss.</p>
 </li>
 <li>
 <p>Create train/validation/test boundaries before looking at global statistics. Preserve the truly untouched final test; choose random stratified, grouped, chronological, purged/embargoed, or out-of-domain splits to match deployment.</p>
@@ -78,12 +78,13 @@
 <p>Establish post-deployment realism: feature availability at prediction time, annotation lag, population shift, duplicate entities, treatment effects and feedback loops.</p>
 </li>
 </ul>
-<p>High-risk examples: one customer appearing in both train/test; scaling or feature selection before cross-validation; future aggregates in a churn predictor; leakage through target-encoded categories; overlapping time windows.</p>
 <h5>Further study — problem framing and experimental design</h5>
 <ul>
 <li><strong>Prediction framing and baselines:</strong> <a href="https://developers.google.com/machine-learning/problem-framing">Google: Framing an ML Problem</a> · <a href="https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators">scikit-learn: Dummy estimators</a>.</li>
 <li><strong>Splits, groups, and temporal validation:</strong> <a href="https://scikit-learn.org/stable/modules/cross_validation.html">scikit-learn: Cross-validation strategies</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html">TimeSeriesSplit API</a>.</li>
-<li><strong>Leakage and point-in-time discipline:</strong> <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn: Common pitfalls</a> · <a href="https://developers.google.com/machine-learning/data-prep/construct/split-data">Google: Data leakage</a>.</li>
+<li><strong>Leakage and point-in-time discipline:</strong> <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn: Common pitfalls</a>.</li>
+<li><strong>scikit-learn: supervised learning:</strong> <a href="https://scikit-learn.org/stable/supervised_learning.html">scikit-learn: supervised learning</a>.</li>
+<li><strong>Google ML Crash Course:</strong> <a href="https://developers.google.com/machine-learning/crash-course">Google ML Crash Course</a>.</li>
 </ul>
 <h4>2 | Data preparation, feature engineering and leakage</h4>
 <table>
@@ -132,10 +133,9 @@
 </tr>
 </tbody>
 </table>
-<p>Preprocessing contract: Pipeline / ColumnTransformer with fit exclusively within each training fold; serialize transformation metadata alongside model and verify offline–online parity. For cross-fitted target encoding and stacked models, preserve out-of-fold separation.</p>
 <h5>Further study — data preparation and feature engineering</h5>
 <ul>
-<li><strong>Missingness and imputation:</strong> <a href="https://scikit-learn.org/stable/modules/impute.html">scikit-learn: Imputation</a> · <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119013563">Little &amp; Rubin: Statistical Analysis with Missing Data (book)</a>.</li>
+<li><strong>Missingness and imputation:</strong> <a href="https://scikit-learn.org/stable/modules/impute.html">scikit-learn: Imputation</a></li>
 <li><strong>Scaling, outliers, and transformations:</strong> <a href="https://scikit-learn.org/stable/modules/preprocessing.html">scikit-learn: Preprocessing</a> · <a href="https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html">Compare scalers example</a>.</li>
 <li><strong>Categoricals and encoding:</strong> <a href="https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features">scikit-learn: Categorical encoding</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html">TargetEncoder</a>.</li>
 <li><strong>Time-aware features:</strong> <a href="https://scikit-learn.org/stable/auto_examples/applications/plot_time_series_lagged_features.html">scikit-learn: Lagged features for forecasting</a>.</li>
@@ -145,6 +145,7 @@
 </ul>
 <h4>3 | Core algorithm comparison</h4>
 <p>Default competition for structured tabular supervised learning: simple baseline → penalized generalized linear model → histogram-based gradient boosting / CatBoost or LightGBM or XGBoost → random forest; test a tabular foundation model where constraints and data size permit. Neural networks are stronger default choices for unstructured modalities than for ordinary medium-size tables.</p>
+<p><strong>Official estimator selection guide:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
 <table>
 <thead>
 <tr>
@@ -374,7 +375,7 @@
 <li><strong>Interpretability:</strong> <a href="https://scikit-learn.org/stable/modules/permutation_importance.html">scikit-learn: Permutation importance</a> · <a href="https://christophm.github.io/interpretable-ml-book/">Interpretable Machine Learning (free book)</a>.</li>
 <li><strong>Thresholds and operational utility:</strong> <a href="https://scikit-learn.org/stable/modules/classification_threshold.html">scikit-learn: Decision-threshold tuning</a>.</li>
 </ul>
-<h4>5 | The state of the field (2025–2026)</h4>
+<h4>5 | The state of the field</h4>
 <h5>What changed and what remains true</h5>
 <ul>
 <li>
@@ -395,11 +396,8 @@
 <li>
 <p>Causal and decision-focused DS are increasingly consequential: uplift and heterogeneous treatment-effect estimation are for interventions, while standard supervised learning predicts outcomes under observed policy. Counterfactual validity cannot be inferred from predictive AUC.</p>
 </li>
-<li>
-<p>Responsible and efficient ML: segment performance, fairness trade-offs, privacy, consent, security, carbon/energy and inference unit economics. Monitoring and controls should be designed before deployment, not retrofitted.</p>
-</li>
 </ul>
-<h5>Further study — modern developments (2025–2026)</h5>
+<h5>Further study — modern developments</h5>
 <ul>
 <li><strong>Tabular foundation models:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">TabPFN (Nature)</a> · <a href="https://github.com/PriorLabs/TabPFN">TabPFN repository and model notes</a>.</li>
 <li><strong>Modern gradient boosting:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting">scikit-learn: Histogram-based gradient boosting</a> · <a href="https://catboost.ai/docs/en/">CatBoost documentation</a>.</li>
@@ -453,12 +451,6 @@
 <li><strong>Governance and model documentation:</strong> <a href="https://arxiv.org/abs/1810.03993">Model cards paper</a> · <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a>.</li>
 <li><strong>Feedback loops and technical debt:</strong> <a href="https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems">Hidden Technical Debt in Machine Learning Systems</a>.</li>
 </ul>
-<h4>7 | Algorithm-selection flowchart and further reading</h4>
-<p><strong>Further study:</strong> <a href="https://scikit-learn.org/stable/supervised_learning.html">scikit-learn: supervised learning</a> · <a href="https://developers.google.com/machine-learning/crash-course">Google ML Crash Course</a>.</p>
-<p>Official scikit-learn estimator map (the exact resource requested): the diagram is an interactive/zoomable external SVG. Use it as a quick orientation aid, not a substitute for robust benchmarking. The provided link is preserved below (internet connection required to view).</p>
-<p><strong>Official scikit-learn ML estimator map (SVG):</strong> <a href="https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg">https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg</a></p>
-<p><strong>Official estimator selection guide:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
-<p><strong>Further study — how to navigate algorithm choices:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">Official selection map</a> · <a href="https://scikit-learn.org/stable/user_guide.html">scikit-learn user guide</a>.</p>
 <h5>References</h5>
 <p>scikit-learn, categorical support in HistGradientBoosting:** <a href="https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html">https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html</a></p>
 <p>Hollmann et al., Nature 2025, TabPFN:** <a href="https://doi.org/10.1038/s41586-024-08328-6">https://doi.org/10.1038/s41586-024-08328-6</a></p>
