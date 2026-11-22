@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Adam Novotny">
-    <meta name="description" content="References">
+    <meta name="description" content="Data Science Review 1 | Problem framing and experimental design Specify prediction target, prediction time, observation unit, decision threshold,...">
     <title>Machine Learning Notes | ANotes</title>
     <link rel="icon" type="image/png" sizes="32x32" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/favicon.png">
 <link rel="canonical" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/blog/machine-learning-notes.html">
@@ -63,7 +63,404 @@
             <p class="blog-post-meta" >
                 Published: 2026-11-22
             </p>
-            <h4>References</h4>
+            <h1>Data Science Review</h1>
+<h2>1 | Problem framing and experimental design</h2>
+<ul>
+<li>
+<p>Specify prediction target, prediction time, observation unit, decision threshold, intervention, utility and the cost of errors. Classify as regression, ranking, classification, forecasting, survival, clustering, anomaly detection or causal estimation.</p>
+</li>
+<li>
+<p>Choose a meaningful minimum baseline: majority class, mean/median, seasonal naïve, last value, simple rule, or regularized linear model. Define the business metric separately from the surrogate training loss.</p>
+</li>
+<li>
+<p>Create train/validation/test boundaries before looking at global statistics. Preserve the truly untouched final test; choose random stratified, grouped, chronological, purged/embargoed, or out-of-domain splits to match deployment.</p>
+</li>
+<li>
+<p>Establish post-deployment realism: feature availability at prediction time, annotation lag, population shift, duplicate entities, treatment effects and feedback loops.</p>
+</li>
+</ul>
+<p>High-risk examples: one customer appearing in both train/test; scaling or feature selection before cross-validation; future aggregates in a churn predictor; leakage through target-encoded categories; overlapping time windows.</p>
+<h3>Further study — problem framing and experimental design</h3>
+<ul>
+<li><strong>Prediction framing and baselines:</strong> <a href="https://developers.google.com/machine-learning/problem-framing">Google: Framing an ML Problem</a> · <a href="https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators">scikit-learn: Dummy estimators</a>.</li>
+<li><strong>Splits, groups, and temporal validation:</strong> <a href="https://scikit-learn.org/stable/modules/cross_validation.html">scikit-learn: Cross-validation strategies</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html">TimeSeriesSplit API</a>.</li>
+<li><strong>Leakage and point-in-time discipline:</strong> <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn: Common pitfalls</a> · <a href="https://developers.google.com/machine-learning/data-prep/construct/split-data">Google: Data leakage</a>.</li>
+</ul>
+<h2>2 | Data preparation, feature engineering and leakage</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Preferred approach</th>
+<th>Watch-outs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missing values</td>
+<td>Determine MCAR/MAR/MNAR; add indicators where useful; median/most-frequent/KNN/model-based imputation; native missing splits for capable trees.</td>
+<td>Imputers fit on training fold only; missingness may be informative or policy-driven.</td>
+</tr>
+<tr>
+<td>Numerical scales / outliers</td>
+<td>StandardScaler for penalized linear, SVM, KNN and PCA; robust scaler/transform for heavy tails; quantile/power transform as justified.</td>
+<td>Do not scale entire dataset pre-split; tree models usually do not need scaling.</td>
+</tr>
+<tr>
+<td>Categorical</td>
+<td>One-hot for low cardinality; explicit ordinal only if meaningful; native categorical boosting; cross-fitted target encoding; hashing for huge vocabularies.</td>
+<td>Rare/unseen categories; target leakage; uncontrolled cardinality and memory.</td>
+</tr>
+<tr>
+<td>Time series / panel</td>
+<td>Lag and rolling-window features computed backward in time, entity-aware validation, known-future covariates only.</td>
+<td>Irregular sampling, label delays, horizon alignment, rolling aggregation leakage.</td>
+</tr>
+<tr>
+<td>Imbalanced labels</td>
+<td>Appropriate ranking/PR metrics, class weights, threshold tuning, re/under-sampling inside folds only.</td>
+<td>SMOTE before split; accuracy as primary metric; probability distortion after resampling.</td>
+</tr>
+<tr>
+<td>High-dimensional / collinear</td>
+<td>Regularization, feature filtering, embedded selection, PCA/SVD where suitable; stability analysis.</td>
+<td>Selection performed outside CV; PCA harms interpretability.</td>
+</tr>
+<tr>
+<td>Data quality</td>
+<td>Schema contracts, ranges, duplicates, joins, units, class prevalence, label provenance, label noise audits.</td>
+<td>Silent schema changes, proxy attributes, broken as-of joins.</td>
+</tr>
+</tbody>
+</table>
+<p>Preprocessing contract: Pipeline / ColumnTransformer with fit exclusively within each training fold; serialize transformation metadata alongside model and verify offline–online parity. For cross-fitted target encoding and stacked models, preserve out-of-fold separation.</p>
+<h3>Further study — data preparation and feature engineering</h3>
+<ul>
+<li><strong>Missingness and imputation:</strong> <a href="https://scikit-learn.org/stable/modules/impute.html">scikit-learn: Imputation</a> · <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119013563">Little &amp; Rubin: Statistical Analysis with Missing Data (book)</a>.</li>
+<li><strong>Scaling, outliers, and transformations:</strong> <a href="https://scikit-learn.org/stable/modules/preprocessing.html">scikit-learn: Preprocessing</a> · <a href="https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html">Compare scalers example</a>.</li>
+<li><strong>Categoricals and encoding:</strong> <a href="https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features">scikit-learn: Categorical encoding</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html">TargetEncoder</a>.</li>
+<li><strong>Time-aware features:</strong> <a href="https://scikit-learn.org/stable/auto_examples/applications/plot_time_series_lagged_features.html">scikit-learn: Lagged features for forecasting</a>.</li>
+<li><strong>Imbalance and resampling:</strong> <a href="https://imbalanced-learn.org/stable/user_guide.html">imbalanced-learn user guide</a> · <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html">scikit-learn: Precision–recall</a>.</li>
+<li><strong>Dimensionality and selection:</strong> <a href="https://scikit-learn.org/stable/modules/feature_selection.html">scikit-learn: Feature selection</a> · <a href="https://scikit-learn.org/stable/modules/decomposition.html#pca">PCA</a>.</li>
+<li><strong>Data quality and leakage-safe pipelines:</strong> <a href="https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html">scikit-learn: ColumnTransformer example</a> · <a href="https://scikit-learn.org/stable/common_pitfalls.html">Common pitfalls</a>.</li>
+</ul>
+<h2>3 | Core algorithm comparison</h2>
+<p>Default competition for structured tabular supervised learning: simple baseline → penalized generalized linear model → histogram-based gradient boosting / CatBoost or LightGBM or XGBoost → random forest; test a tabular foundation model where constraints and data size permit. Neural networks are stronger default choices for unstructured modalities than for ordinary medium-size tables.</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Strengths / when to try</th>
+<th>Limitations / sensitive knobs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linear / logistic / elastic net / GLM</td>
+<td>Fast, explainable, stable, sparse high-dimensional features; effective calibrated-ish starting point; useful with low signal.</td>
+<td>Linear additive boundaries absent features; scaling and nonlinear transformations; C/alpha, L1 ratio, interactions, regularization.</td>
+</tr>
+<tr>
+<td>k-nearest neighbors (KNN)</td>
+<td>Simple nonparametric local structure; little fit time; good small low-dimensional smooth manifolds.</td>
+<td>Prediction/storage cost O(n); curse of dimensionality; metric and scaling critical; k, distance weighting, ANN indexing.</td>
+</tr>
+<tr>
+<td>Single decision tree</td>
+<td>Human-readable rules, nonlinear splits, mixed features, monotone constraints in some implementations.</td>
+<td>High variance/instability, axis-aligned partition artifacts, depth and leaf-size tuning; probabilities often poor.</td>
+</tr>
+<tr>
+<td>Random forest / ExtraTrees</td>
+<td>Low tuning burden; robust nonlinear baseline; variance reduction via bagging; permutation importance feasible.</td>
+<td>Larger models, weaker extrapolation, less sharp tabular accuracy than tuned boosting; leaf size/max_features/trees.</td>
+</tr>
+<tr>
+<td>Gradient-boosted trees (GBDT)</td>
+<td>Often strongest general tabular baseline; flexible nonlinear interactions; native missing/categorical options; fast histogram engines.</td>
+<td>Sensitive to overfitting/noisy labels, tuning/early stopping, split artifacts, extrapolation; learning_rate, leaves/depth, iterations, regularization.</td>
+</tr>
+<tr>
+<td>SVM / kernel methods</td>
+<td>Strong margins for medium data, sparse text via linear SVM, nonlinear RBF with good feature scale.</td>
+<td>Kernel fit roughly quadratic+ in samples; probabilities need calibration; C, gamma, kernel.</td>
+</tr>
+<tr>
+<td>Naïve Bayes</td>
+<td>Very fast for sparse text/counts; low sample needs; robust baseline.</td>
+<td>Strong conditional-independence assumptions; poorly calibrated probabilities; smoothing alpha.</td>
+</tr>
+<tr>
+<td>GAM / splines / Explainable Boosting</td>
+<td>Interpretable nonlinear main effects; often excellent regulated-domain accuracy/clarity compromise.</td>
+<td>Misses complex interactions unless added; binning/smoothing/interaction tuning.</td>
+</tr>
+<tr>
+<td>MLP / tabular deep nets</td>
+<td>GPU-friendly, multitask embeddings, shared representations and huge training sets; combines modalities.</td>
+<td>Data hungry, more tuning, feature/scale sensitivity; may trail GBDT on modest heterogeneous tables.</td>
+</tr>
+<tr>
+<td>Tabular foundation models (e.g., TabPFN)</td>
+<td>Fast task adaptation, compelling small-data accuracy, useful in an ensemble or fast benchmark.</td>
+<td>Memory/context/size/feature limits vary by version; licensing, OOD, calibration and independent evaluation concerns.</td>
+</tr>
+<tr>
+<td>Gaussian processes</td>
+<td>Uncertainty-aware regression, strong small-data smooth-function prior; Bayesian optimization.</td>
+<td>Classic exact inference O(n³), kernel sensitivity; sparse approximations for scale.</td>
+</tr>
+</tbody>
+</table>
+<h2>Further study — supervised algorithm families</h2>
+<p>Each pair starts with a practical explanation and, where useful, a deeper implementation or research reference.</p>
+<h3>Linear regression, logistic regression, Ridge, Lasso, and Elastic Net</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn: Generalized linear models</a> · <a href="https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression">scikit-learn: Logistic regression</a>. <strong>Focus:</strong> regularization geometry, collinearity, interactions, coefficient interpretation.</p>
+<h3>K-nearest neighbors (KNN)</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/neighbors.html">scikit-learn: Nearest Neighbors</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html">NearestNeighbors API</a>. <strong>Focus:</strong> distance metric, scaling, search complexity, dimensionality.</p>
+<h3>Decision trees</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/tree.html">scikit-learn: Decision trees</a> · <a href="https://scikit-learn.org/stable/auto_examples/tree/plot_unveil_tree_structure.html">Plotting a decision tree</a>. <strong>Focus:</strong> impurity, pruning, instability, depth/leaf-size effects.</p>
+<h3>Random forests and ExtraTrees</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html">scikit-learn: Ensemble methods</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">RandomForestClassifier</a>. <strong>Focus:</strong> bootstrap variance reduction, decorrelation, out-of-bag scoring.</p>
+<h3>Gradient-boosted trees: XGBoost, LightGBM, CatBoost, HistGBDT</h3>
+<p><strong>Read:</strong> <a href="https://xgboost.readthedocs.io/en/stable/">XGBoost documentation</a> · <a href="https://lightgbm.readthedocs.io/en/stable/">LightGBM documentation</a> · <a href="https://catboost.ai/docs/en/">CatBoost documentation</a> · <a href="https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting">scikit-learn: Histogram boosting</a>. <strong>Focus:</strong> sequential fitting, early stopping, regularization, native categoricals.</p>
+<h3>SVM and kernel methods</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/svm.html">scikit-learn: Support vector machines</a> · <a href="https://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html">RBF SVM parameter example</a>. <strong>Focus:</strong> margins, kernels, C/gamma, complexity.</p>
+<h3>Naïve Bayes</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/naive_bayes.html">scikit-learn: Naïve Bayes</a> · <a href="https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html">scikit-learn: Text classification</a>. <strong>Focus:</strong> independence assumption, count features, smoothing, calibration.</p>
+<h3>GAMs and explainable boosting machines</h3>
+<p><strong>Read:</strong> <a href="https://interpret.ml/docs/ebm.html">InterpretML: Explainable Boosting Machine</a> · <a href="https://pygam.readthedocs.io/en/latest/">pyGAM documentation</a>. <strong>Focus:</strong> smooth additive effects vs. explicitly modeled interactions.</p>
+<h3>Neural networks and MLPs</h3>
+<p><strong>Read:</strong> <a href="https://pytorch.org/tutorials/">PyTorch tutorials</a> · <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">scikit-learn: Neural network models</a>. <strong>Focus:</strong> optimization, regularization, embeddings, when deep learning is competitive.</p>
+<h3>Tabular foundation models (TabPFN)</h3>
+<p><strong>Read:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">TabPFN research paper (Nature, 2025)</a> · <a href="https://github.com/PriorLabs/TabPFN">TabPFN repository</a>. <strong>Focus:</strong> pretrained priors, task limits, licensing, benchmark quality.</p>
+<h3>Gaussian processes</h3>
+<p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/gaussian_process.html">scikit-learn: Gaussian processes</a> · <a href="https://gaussianprocess.org/gpml/">Gaussian Processes for Machine Learning (free book)</a>. <strong>Focus:</strong> kernels, posterior uncertainty, O(n³) exact inference.</p>
+<h2>Key algorithm mechanics and selection heuristics</h2>
+<ul>
+<li>
+<p>Bias–variance: bagging averages unstable learners to reduce variance; boosting sequentially fits residuals/gradients to reduce bias (but can overfit); regularization constrains complexity. Early stopping is a form of regularization.</p>
+</li>
+<li>
+<p>KNN: classification by neighborhood vote; regression by local mean. Crucial choices are k, distance metric, feature scaling, dimensionality reduction and approximate nearest-neighbor lookup. Do not confuse predictive KNN with embedding retrieval KNN.</p>
+</li>
+<li>
+<p>Trees: recursive threshold partitions; impurity (Gini/entropy) for classification and squared error/other objectives for regression. Small leaves and deep trees make jagged high-variance functions.</p>
+</li>
+<li>
+<p>Bagging versus boosting: random forests decorrelate trees using feature subsampling; GBDT adds trees stagewise with shrinkage. CatBoost emphasizes categorical handling and ordered boosting; LightGBM prioritizes histogram/leafwise speed; XGBoost offers strong regularization and engineering.</p>
+</li>
+<li>
+<p>Logistic regression models log-odds, not probability linearly. Interpretation of coefficients depends on scaling, regularization, collinearity and feature coding.</p>
+</li>
+<li>
+<p>Kernel SVM and RBF distinguish by pairwise similarity; useful at moderate n, but RBF scaling and calibration can dominate operational costs.</p>
+</li>
+</ul>
+<h3>Further study — key algorithm mechanics</h3>
+<ul>
+<li><strong>Bagging versus boosting and bias–variance:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html">scikit-learn: Ensembles</a> · <a href="https://hastie.su.domains/ElemStatLearn/">Elements of Statistical Learning (free PDF, Stanford)</a>.</li>
+<li><strong>Interpreting linear models and kernel methods:</strong> <a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn: Linear models</a> · <a href="https://scikit-learn.org/stable/modules/svm.html">SVM user guide</a>.</li>
+</ul>
+<h3>Unsupervised, representation, time-series and causal methods</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Common methods / strengths</th>
+<th>Cautions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clustering</td>
+<td>k-means (fast spherical groups); GMM (soft probabilistic); DBSCAN/HDBSCAN (arbitrary density clusters, noise); spectral (nonconvex geometry).</td>
+<td>Feature scaling, cluster stability, density heterogeneity; silhouette not equal business validity.</td>
+</tr>
+<tr>
+<td>Dimensionality reduction</td>
+<td>PCA/SVD (variance and linear structure); UMAP/t-SNE (visual exploration); autoencoders (learned nonlinear embedding).</td>
+<td>UMAP/t-SNE distances and apparent clusters can mislead; fit embeddings on training data for prediction.</td>
+</tr>
+<tr>
+<td>Anomaly detection</td>
+<td>Isolation forest (efficient), LOF (local density), one-class SVM, robust covariance; supervised detection if labels exist.</td>
+<td>Threshold depends on cost/prevalence; extreme class skew and unseen normal modes.</td>
+</tr>
+<tr>
+<td>Forecasting</td>
+<td>Seasonal naïve, ETS/ARIMA/SARIMAX, pooled GBDT on lag features, deep global forecasting models.</td>
+<td>Rolling-origin evaluation, leakage from future regressors, hierarchy reconciliation, intermittent demand.</td>
+</tr>
+<tr>
+<td>Causal inference</td>
+<td>RCT first; DAGs, backdoor adjustment, propensity weighting, doubly robust/AIPW, diff-in-diff, IV, synthetic controls, causal forests.</td>
+<td>Identification and overlap assumptions outweigh predictive accuracy; interference/hidden confounding.</td>
+</tr>
+</tbody>
+</table>
+<h3>Further study — unsupervised, representation, forecasting, causal methods</h3>
+<ul>
+<li><strong>Clustering:</strong> <a href="https://scikit-learn.org/stable/modules/clustering.html">scikit-learn: Clustering guide</a> · <a href="https://hdbscan.readthedocs.io/en/latest/">HDBSCAN documentation</a>.</li>
+<li><strong>Dimensionality reduction:</strong> <a href="https://scikit-learn.org/stable/modules/decomposition.html">scikit-learn: Decomposition</a> · <a href="https://umap-learn.readthedocs.io/en/latest/">UMAP documentation</a>.</li>
+<li><strong>Anomaly detection:</strong> <a href="https://scikit-learn.org/stable/modules/outlier_detection.html">scikit-learn: Novelty and outlier detection</a>.</li>
+<li><strong>Forecasting:</strong> <a href="https://otexts.com/fpp3/">Forecasting: Principles and Practice (free book)</a> · <a href="https://www.sktime.net/en/stable/">sktime documentation</a>.</li>
+<li><strong>Causal inference:</strong> <a href="https://theeffectbook.net/">The Effect: An Introduction to Research Design and Causality (free book)</a> · <a href="https://www.pywhy.org/dowhy/">DoWhy documentation</a>.</li>
+</ul>
+<h2>4 | Evaluation, calibration and reliable model selection</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Use / interpretation</th>
+<th>Caveat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Balanced classification</td>
+<td>Log loss, ROC-AUC, balanced accuracy, F1, precision/recall as needed.</td>
+<td>AUC is threshold-free but not a business utility measure.</td>
+</tr>
+<tr>
+<td>Rare positive events</td>
+<td>PR-AUC (average precision), recall@precision, precision@k, lift, expected utility.</td>
+<td>Always report prevalence; PR-AUC shifts with prevalence.</td>
+</tr>
+<tr>
+<td>Regression</td>
+<td>MAE (robust), RMSE (penalizes large misses), pinball loss (quantiles), R² with context.</td>
+<td>MAPE unstable near zero; report strata and residual shape.</td>
+</tr>
+<tr>
+<td>Forecasts</td>
+<td>MASE/RMSSE, horizon-weighted losses, quantile coverage/pinball score.</td>
+<td>Avoid random split of correlated time points.</td>
+</tr>
+<tr>
+<td>Ranking / retrieval</td>
+<td>NDCG@k, MAP, MRR, recall@k; for RAG include answer faithfulness and task success.</td>
+<td>Negative sampling and leakage may inflate retrieval results.</td>
+</tr>
+<tr>
+<td>Probabilistic predictions</td>
+<td>Brier/log loss, reliability diagrams, ECE with cautions, interval coverage.</td>
+<td>Calibrate on disjoint data using Platt, isotonic or temperature scaling as appropriate.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>Cross-validation: use GroupKFold when entities repeat; TimeSeriesSplit / rolling-origin for temporal processes; nested CV if reporting the unbiased performance of a tuned model. Across repeated tuning, validation data gets implicitly overfit.</p>
+</li>
+<li>
+<p>Report uncertainty: confidence intervals via grouped/blocked bootstrap where justified; compare on identical folds; show distribution across seeds and segments, not just a best-score leaderboard.</p>
+</li>
+<li>
+<p>Optimize hyperparameters efficiently: random search or Bayesian optimization, successive halving, early stopping, sensible search spaces; keep a compute budget and track every experiment. Never choose test-set threshold or hyperparameters.</p>
+</li>
+<li>
+<p>Interpretation: permutation importance on held-out data, SHAP for local explanations with background/dependence caveats, partial dependence/ALE, counterfactual checks; importance ≠ causality.</p>
+</li>
+<li>
+<p>Decision threshold: select using operating costs and calibration on validation data. Model discrimination, calibration and policy utility are different properties.</p>
+</li>
+</ul>
+<h3>Further study — evaluation, calibration, and model selection</h3>
+<ul>
+<li><strong>Classification, regression, ranking metrics:</strong> <a href="https://scikit-learn.org/stable/modules/model_evaluation.html">scikit-learn: Model evaluation</a> · <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html">Precision–recall example</a>.</li>
+<li><strong>Cross-validation and uncertainty:</strong> <a href="https://scikit-learn.org/stable/modules/cross_validation.html">scikit-learn: Cross-validation</a> · <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html">Nested vs non-nested CV</a>.</li>
+<li><strong>Hyperparameter optimization:</strong> <a href="https://scikit-learn.org/stable/modules/grid_search.html">scikit-learn: Hyperparameter tuning</a> · <a href="https://optuna.readthedocs.io/en/stable/">Optuna docs</a>.</li>
+<li><strong>Probability calibration:</strong> <a href="https://scikit-learn.org/stable/modules/calibration.html">scikit-learn: Calibration</a> · <a href="https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_curve.html">Calibration curves example</a>.</li>
+<li><strong>Interpretability:</strong> <a href="https://scikit-learn.org/stable/modules/permutation_importance.html">scikit-learn: Permutation importance</a> · <a href="https://christophm.github.io/interpretable-ml-book/">Interpretable Machine Learning (free book)</a>.</li>
+<li><strong>Thresholds and operational utility:</strong> <a href="https://scikit-learn.org/stable/modules/classification_threshold.html">scikit-learn: Decision-threshold tuning</a>.</li>
+</ul>
+<h2>5 | The state of the field (2025–2026)</h2>
+<h2>What changed and what remains true</h2>
+<ul>
+<li>
+<p>Tabular foundation models are a real alternative to test, not a blanket replacement for boosted trees. TabPFN reported major gains on small tabular tasks; 2026 surveys describe rapid scaling and new competitors, but model versions, claimed capacity and non-commercial weights vary. Evaluate against strong tuned GBDT on your exact split and compute budget. [2,3]</p>
+</li>
+<li>
+<p>Histogram GBDT remains a production default for many tables. Modern scikit-learn HistGradientBoosting handles missing values and categorical dtypes natively; using it can simplify preprocessing, but high-cardinality categories and constraints still require design work. [1,4]</p>
+</li>
+<li>
+<p>Foundation models / embeddings for text, vision, speech and mixed modalities shift the workflow from handcrafted inputs to pretrained representation + task-specific adaptation, retrieval or lightweight heads. Compare frozen embeddings with fine-tuning; check distribution shift, cost, privacy and evaluation contamination.</p>
+</li>
+<li>
+<p>LLM applications: distinguish prompt-only, RAG, fine-tuning and agentic tool use. Evaluate retrieval recall, groundedness, task correctness, abstention, security, latency and cost; use golden sets and human adjudication. Beware prompt injection, poisoned retrieval and non-deterministic responses.</p>
+</li>
+<li>
+<p>Evaluation contamination and data leakage are elevated concerns: recent research documents pervasive preprocessing leakage and shows that some tabular-language-model benchmarks overstate generalization. Require entity- and time-aware deduplication, exact label-time audits and independently held-out corpora. [5,6]</p>
+</li>
+<li>
+<p>Causal and decision-focused DS are increasingly consequential: uplift and heterogeneous treatment-effect estimation are for interventions, while standard supervised learning predicts outcomes under observed policy. Counterfactual validity cannot be inferred from predictive AUC.</p>
+</li>
+<li>
+<p>Responsible and efficient ML: segment performance, fairness trade-offs, privacy, consent, security, carbon/energy and inference unit economics. Monitoring and controls should be designed before deployment, not retrofitted.</p>
+</li>
+</ul>
+<h3>Further study — modern developments (2025–2026)</h3>
+<ul>
+<li><strong>Tabular foundation models:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">TabPFN (Nature)</a> · <a href="https://github.com/PriorLabs/TabPFN">TabPFN repository and model notes</a>.</li>
+<li><strong>Modern gradient boosting:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting">scikit-learn: Histogram-based gradient boosting</a> · <a href="https://catboost.ai/docs/en/">CatBoost documentation</a>.</li>
+<li><strong>Foundation embeddings and transfer learning:</strong> <a href="https://huggingface.co/docs/transformers/index">Hugging Face Transformers docs</a> · <a href="https://sbert.net/">Sentence Transformers</a>.</li>
+<li><strong>RAG and agentic workflows:</strong> <a href="https://docs.langchain.com/oss/python/langchain/retrieval">LangChain: Retrieval concepts</a> · <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM Applications</a>.</li>
+<li><strong>Evaluation contamination and leakage:</strong> <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn: Common pitfalls</a> · <a href="https://proceedings.mlr.press/v306/gorla26a.html">ICML 2026: Tabular language model generalization</a>.</li>
+<li><strong>Causal/decision-focused ML:</strong> <a href="https://www.pywhy.org/EconML/">EconML documentation</a> · <a href="https://theeffectbook.net/">The Effect (free book)</a>.</li>
+<li><strong>Responsible ML:</strong> <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI Risk Management Framework</a> · <a href="https://ai.google/responsibility/responsible-ai-practices/">Google Responsible AI Practices</a>.</li>
+</ul>
+<h2>6 | Deployment, MLOps, risk and monitoring</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Operational control</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reproducibility</td>
+<td>Version code/data/labels/features/models; log seeds, environment, split definitions, parameters and provenance; model registry and approvals.</td>
+</tr>
+<tr>
+<td>Serving</td>
+<td>Batch versus synchronous latency; resource limits; schema validation, fallbacks, predictable missing/unseen values; shadow/canary or A/B rollouts.</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Input quality; missingness; numerical/categorical drift; label-delayed outcome and calibration drift; data slice parity; latency, costs, failure rate.</td>
+</tr>
+<tr>
+<td>Drift response</td>
+<td>Distinguish covariate shift P(X), label shift P(Y), concept shift P(Y|X); alert thresholds anchored to action, not arbitrary PSI alone.</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>Model cards, intended use, subgroup evaluation, explainability, privacy/security controls, human oversight, retention and rollback playbook.</td>
+</tr>
+<tr>
+<td>Feedback</td>
+<td>Track how predictions alter labels, selection/observability, incentives and future data; reserve exploration/holdouts when appropriate.</td>
+</tr>
+</tbody>
+</table>
+<h3>Further study — production and monitoring</h3>
+<ul>
+<li><strong>Tracking and reproducibility:</strong> <a href="https://mlflow.org/docs/latest/index.html">MLflow documentation</a> · <a href="https://dvc.org/doc">DVC documentation</a>.</li>
+<li><strong>Serving and rollout:</strong> <a href="https://docs.bentoml.com/">BentoML documentation</a> · <a href="https://kserve.github.io/website/">KServe documentation</a>.</li>
+<li><strong>Data quality and validation:</strong> <a href="https://docs.greatexpectations.io/">Great Expectations docs</a> · <a href="https://www.tensorflow.org/tfx/data_validation/get_started">TensorFlow Data Validation</a>.</li>
+<li><strong>Drift and observability:</strong> <a href="https://docs.evidentlyai.com/">Evidently AI documentation</a> · <a href="https://developers.google.com/machine-learning/guides/rules-of-ml">Google: Monitoring ML systems</a>.</li>
+<li><strong>Governance and model documentation:</strong> <a href="https://arxiv.org/abs/1810.03993">Model cards paper</a> · <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a>.</li>
+<li><strong>Feedback loops and technical debt:</strong> <a href="https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems">Hidden Technical Debt in Machine Learning Systems</a>.</li>
+</ul>
+<h2>7 | Algorithm-selection flowchart and further reading</h2>
+<p><strong>Further study:</strong> <a href="https://scikit-learn.org/stable/supervised_learning.html">scikit-learn: supervised learning</a> · <a href="https://developers.google.com/machine-learning/crash-course">Google ML Crash Course</a>.</p>
+<p>Official scikit-learn estimator map (the exact resource requested): the diagram is an interactive/zoomable external SVG. Use it as a quick orientation aid, not a substitute for robust benchmarking. The provided link is preserved below (internet connection required to view).</p>
+<p><strong>Official scikit-learn ML estimator map (SVG):</strong> <a href="https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg">https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg</a></p>
+<p><strong>Official estimator selection guide:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
+<p><strong>Further study — how to navigate algorithm choices:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">Official selection map</a> · <a href="https://scikit-learn.org/stable/user_guide.html">scikit-learn user guide</a>.</p>
+<h4>References</h4>
 <p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png" alt="Normal equation" style="width: 100%" loading="lazy"></a>
 <a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*qtdPV-XQhTYACKS7beLDpg.jpeg.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*qtdPV-XQhTYACKS7beLDpg.jpeg.png" alt="Correlation formula" style="width: 100%" loading="lazy"></a>
 <a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png" alt="Ridge Regression" style="width: 100%" loading="lazy"></a>
@@ -80,6 +477,12 @@
 <a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png" alt="Correlation formula" style="width: 100%" loading="lazy"></a>
 <a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png" alt="Selecting statistical test. Source: Statistical Rethinking 2. Free Chapter 1" style="width: 100%" loading="lazy"></a>
 <a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*7Vz6m3tqtLAvxF_Xqe2JAQ.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*7Vz6m3tqtLAvxF_Xqe2JAQ.png.png" alt="F-statistic" style="width: 100%" loading="lazy"></a></p>
+<p><strong>[1] scikit-learn, categorical support in HistGradientBoosting:</strong> <a href="https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html">https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html</a></p>
+<p><strong>[2] Hollmann et al., Nature 2025, TabPFN:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">https://doi.org/10.1038/s41586-024-08328-6</a></p>
+<p><strong>[3] Current generation of tabular foundation models: critical review (2026):</strong> <a href="https://www.mdpi.com/2504-4990/8/8/244">https://www.mdpi.com/2504-4990/8/8/244</a></p>
+<p><strong>[4] scikit-learn, choosing the right estimator:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
+<p><strong>[5] Gorla &amp; Puduppully, ICML 2026, tabular language models generalization:</strong> <a href="https://proceedings.mlr.press/v306/gorla26a.html">https://proceedings.mlr.press/v306/gorla26a.html</a></p>
+<p><strong>[6] Understanding data leakage in real-world ML notebooks (2026):</strong> <a href="https://www.sciencedirect.com/science/article/pii/S0950584926003253">https://www.sciencedirect.com/science/article/pii/S0950584926003253</a></p>
             </div>
     
         </div>
