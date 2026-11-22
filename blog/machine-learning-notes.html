@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Adam Novotny">
-    <meta name="description" content="Data Science Review 1 | Problem framing and experimental design Specify prediction target, prediction time, observation unit, decision threshold,...">
+    <meta name="description" content="1 | Problem framing and experimental design Specify prediction target, prediction time, observation unit, decision threshold, intervention,...">
     <title>Machine Learning Notes | ANotes</title>
     <link rel="icon" type="image/png" sizes="32x32" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/favicon.png">
 <link rel="canonical" href="https://adamnovotnycom.github.io/adamnovotny-com-staging/blog/machine-learning-notes.html">
@@ -63,8 +63,7 @@
             <p class="blog-post-meta" >
                 Published: 2026-11-22
             </p>
-            <h1>Data Science Review</h1>
-<h2>1 | Problem framing and experimental design</h2>
+            <h4>1 | Problem framing and experimental design</h4>
 <ul>
 <li>
 <p>Specify prediction target, prediction time, observation unit, decision threshold, intervention, utility and the cost of errors. Classify as regression, ranking, classification, forecasting, survival, clustering, anomaly detection or causal estimation.</p>
@@ -80,13 +79,13 @@
 </li>
 </ul>
 <p>High-risk examples: one customer appearing in both train/test; scaling or feature selection before cross-validation; future aggregates in a churn predictor; leakage through target-encoded categories; overlapping time windows.</p>
-<h3>Further study — problem framing and experimental design</h3>
+<h5>Further study — problem framing and experimental design</h5>
 <ul>
 <li><strong>Prediction framing and baselines:</strong> <a href="https://developers.google.com/machine-learning/problem-framing">Google: Framing an ML Problem</a> · <a href="https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators">scikit-learn: Dummy estimators</a>.</li>
 <li><strong>Splits, groups, and temporal validation:</strong> <a href="https://scikit-learn.org/stable/modules/cross_validation.html">scikit-learn: Cross-validation strategies</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html">TimeSeriesSplit API</a>.</li>
 <li><strong>Leakage and point-in-time discipline:</strong> <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn: Common pitfalls</a> · <a href="https://developers.google.com/machine-learning/data-prep/construct/split-data">Google: Data leakage</a>.</li>
 </ul>
-<h2>2 | Data preparation, feature engineering and leakage</h2>
+<h4>2 | Data preparation, feature engineering and leakage</h4>
 <table>
 <thead>
 <tr>
@@ -134,7 +133,7 @@
 </tbody>
 </table>
 <p>Preprocessing contract: Pipeline / ColumnTransformer with fit exclusively within each training fold; serialize transformation metadata alongside model and verify offline–online parity. For cross-fitted target encoding and stacked models, preserve out-of-fold separation.</p>
-<h3>Further study — data preparation and feature engineering</h3>
+<h5>Further study — data preparation and feature engineering</h5>
 <ul>
 <li><strong>Missingness and imputation:</strong> <a href="https://scikit-learn.org/stable/modules/impute.html">scikit-learn: Imputation</a> · <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119013563">Little &amp; Rubin: Statistical Analysis with Missing Data (book)</a>.</li>
 <li><strong>Scaling, outliers, and transformations:</strong> <a href="https://scikit-learn.org/stable/modules/preprocessing.html">scikit-learn: Preprocessing</a> · <a href="https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html">Compare scalers example</a>.</li>
@@ -144,7 +143,7 @@
 <li><strong>Dimensionality and selection:</strong> <a href="https://scikit-learn.org/stable/modules/feature_selection.html">scikit-learn: Feature selection</a> · <a href="https://scikit-learn.org/stable/modules/decomposition.html#pca">PCA</a>.</li>
 <li><strong>Data quality and leakage-safe pipelines:</strong> <a href="https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html">scikit-learn: ColumnTransformer example</a> · <a href="https://scikit-learn.org/stable/common_pitfalls.html">Common pitfalls</a>.</li>
 </ul>
-<h2>3 | Core algorithm comparison</h2>
+<h4>3 | Core algorithm comparison</h4>
 <p>Default competition for structured tabular supervised learning: simple baseline → penalized generalized linear model → histogram-based gradient boosting / CatBoost or LightGBM or XGBoost → random forest; test a tabular foundation model where constraints and data size permit. Neural networks are stronger default choices for unstructured modalities than for ordinary medium-size tables.</p>
 <table>
 <thead>
@@ -212,31 +211,31 @@
 </tr>
 </tbody>
 </table>
-<h2>Further study — supervised algorithm families</h2>
+<h5>Further study — supervised algorithm families</h5>
 <p>Each pair starts with a practical explanation and, where useful, a deeper implementation or research reference.</p>
-<h3>Linear regression, logistic regression, Ridge, Lasso, and Elastic Net</h3>
+<p><strong>Linear regression, logistic regression, Ridge, Lasso, and Elastic Net</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn: Generalized linear models</a> · <a href="https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression">scikit-learn: Logistic regression</a>. <strong>Focus:</strong> regularization geometry, collinearity, interactions, coefficient interpretation.</p>
-<h3>K-nearest neighbors (KNN)</h3>
+<p><strong>K-nearest neighbors (KNN)</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/neighbors.html">scikit-learn: Nearest Neighbors</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html">NearestNeighbors API</a>. <strong>Focus:</strong> distance metric, scaling, search complexity, dimensionality.</p>
-<h3>Decision trees</h3>
+<p><strong>Decision trees</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/tree.html">scikit-learn: Decision trees</a> · <a href="https://scikit-learn.org/stable/auto_examples/tree/plot_unveil_tree_structure.html">Plotting a decision tree</a>. <strong>Focus:</strong> impurity, pruning, instability, depth/leaf-size effects.</p>
-<h3>Random forests and ExtraTrees</h3>
+<p><strong>Random forests and ExtraTrees</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html">scikit-learn: Ensemble methods</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">RandomForestClassifier</a>. <strong>Focus:</strong> bootstrap variance reduction, decorrelation, out-of-bag scoring.</p>
-<h3>Gradient-boosted trees: XGBoost, LightGBM, CatBoost, HistGBDT</h3>
+<p><strong>Gradient-boosted trees: XGBoost, LightGBM, CatBoost, HistGBDT</strong></p>
 <p><strong>Read:</strong> <a href="https://xgboost.readthedocs.io/en/stable/">XGBoost documentation</a> · <a href="https://lightgbm.readthedocs.io/en/stable/">LightGBM documentation</a> · <a href="https://catboost.ai/docs/en/">CatBoost documentation</a> · <a href="https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting">scikit-learn: Histogram boosting</a>. <strong>Focus:</strong> sequential fitting, early stopping, regularization, native categoricals.</p>
-<h3>SVM and kernel methods</h3>
+<p><strong>SVM and kernel methods</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/svm.html">scikit-learn: Support vector machines</a> · <a href="https://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html">RBF SVM parameter example</a>. <strong>Focus:</strong> margins, kernels, C/gamma, complexity.</p>
-<h3>Naïve Bayes</h3>
+<p><strong>Naïve Bayes</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/naive_bayes.html">scikit-learn: Naïve Bayes</a> · <a href="https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html">scikit-learn: Text classification</a>. <strong>Focus:</strong> independence assumption, count features, smoothing, calibration.</p>
-<h3>GAMs and explainable boosting machines</h3>
+<p><strong>GAMs and explainable boosting machines</strong></p>
 <p><strong>Read:</strong> <a href="https://interpret.ml/docs/ebm.html">InterpretML: Explainable Boosting Machine</a> · <a href="https://pygam.readthedocs.io/en/latest/">pyGAM documentation</a>. <strong>Focus:</strong> smooth additive effects vs. explicitly modeled interactions.</p>
-<h3>Neural networks and MLPs</h3>
+<p><strong>Neural networks and MLPs</strong></p>
 <p><strong>Read:</strong> <a href="https://pytorch.org/tutorials/">PyTorch tutorials</a> · <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">scikit-learn: Neural network models</a>. <strong>Focus:</strong> optimization, regularization, embeddings, when deep learning is competitive.</p>
-<h3>Tabular foundation models (TabPFN)</h3>
+<p><strong>Tabular foundation models (TabPFN)</strong></p>
 <p><strong>Read:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">TabPFN research paper (Nature, 2025)</a> · <a href="https://github.com/PriorLabs/TabPFN">TabPFN repository</a>. <strong>Focus:</strong> pretrained priors, task limits, licensing, benchmark quality.</p>
-<h3>Gaussian processes</h3>
+<p><strong>Gaussian processes</strong></p>
 <p><strong>Read:</strong> <a href="https://scikit-learn.org/stable/modules/gaussian_process.html">scikit-learn: Gaussian processes</a> · <a href="https://gaussianprocess.org/gpml/">Gaussian Processes for Machine Learning (free book)</a>. <strong>Focus:</strong> kernels, posterior uncertainty, O(n³) exact inference.</p>
-<h2>Key algorithm mechanics and selection heuristics</h2>
+<h5>Key algorithm mechanics and selection heuristics</h5>
 <ul>
 <li>
 <p>Bias–variance: bagging averages unstable learners to reduce variance; boosting sequentially fits residuals/gradients to reduce bias (but can overfit); regularization constrains complexity. Early stopping is a form of regularization.</p>
@@ -257,12 +256,12 @@
 <p>Kernel SVM and RBF distinguish by pairwise similarity; useful at moderate n, but RBF scaling and calibration can dominate operational costs.</p>
 </li>
 </ul>
-<h3>Further study — key algorithm mechanics</h3>
+<h5>Further study — key algorithm mechanics</h5>
 <ul>
 <li><strong>Bagging versus boosting and bias–variance:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html">scikit-learn: Ensembles</a> · <a href="https://hastie.su.domains/ElemStatLearn/">Elements of Statistical Learning (free PDF, Stanford)</a>.</li>
 <li><strong>Interpreting linear models and kernel methods:</strong> <a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn: Linear models</a> · <a href="https://scikit-learn.org/stable/modules/svm.html">SVM user guide</a>.</li>
 </ul>
-<h3>Unsupervised, representation, time-series and causal methods</h3>
+<h5>Unsupervised, representation, time-series and causal methods</h5>
 <table>
 <thead>
 <tr>
@@ -299,7 +298,7 @@
 </tr>
 </tbody>
 </table>
-<h3>Further study — unsupervised, representation, forecasting, causal methods</h3>
+<h5>Further study — unsupervised, representation, forecasting, causal methods</h5>
 <ul>
 <li><strong>Clustering:</strong> <a href="https://scikit-learn.org/stable/modules/clustering.html">scikit-learn: Clustering guide</a> · <a href="https://hdbscan.readthedocs.io/en/latest/">HDBSCAN documentation</a>.</li>
 <li><strong>Dimensionality reduction:</strong> <a href="https://scikit-learn.org/stable/modules/decomposition.html">scikit-learn: Decomposition</a> · <a href="https://umap-learn.readthedocs.io/en/latest/">UMAP documentation</a>.</li>
@@ -307,7 +306,7 @@
 <li><strong>Forecasting:</strong> <a href="https://otexts.com/fpp3/">Forecasting: Principles and Practice (free book)</a> · <a href="https://www.sktime.net/en/stable/">sktime documentation</a>.</li>
 <li><strong>Causal inference:</strong> <a href="https://theeffectbook.net/">The Effect: An Introduction to Research Design and Causality (free book)</a> · <a href="https://www.pywhy.org/dowhy/">DoWhy documentation</a>.</li>
 </ul>
-<h2>4 | Evaluation, calibration and reliable model selection</h2>
+<h4>4 | Evaluation, calibration and reliable model selection</h4>
 <table>
 <thead>
 <tr>
@@ -366,7 +365,7 @@
 <p>Decision threshold: select using operating costs and calibration on validation data. Model discrimination, calibration and policy utility are different properties.</p>
 </li>
 </ul>
-<h3>Further study — evaluation, calibration, and model selection</h3>
+<h5>Further study — evaluation, calibration, and model selection</h5>
 <ul>
 <li><strong>Classification, regression, ranking metrics:</strong> <a href="https://scikit-learn.org/stable/modules/model_evaluation.html">scikit-learn: Model evaluation</a> · <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html">Precision–recall example</a>.</li>
 <li><strong>Cross-validation and uncertainty:</strong> <a href="https://scikit-learn.org/stable/modules/cross_validation.html">scikit-learn: Cross-validation</a> · <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html">Nested vs non-nested CV</a>.</li>
@@ -375,8 +374,8 @@
 <li><strong>Interpretability:</strong> <a href="https://scikit-learn.org/stable/modules/permutation_importance.html">scikit-learn: Permutation importance</a> · <a href="https://christophm.github.io/interpretable-ml-book/">Interpretable Machine Learning (free book)</a>.</li>
 <li><strong>Thresholds and operational utility:</strong> <a href="https://scikit-learn.org/stable/modules/classification_threshold.html">scikit-learn: Decision-threshold tuning</a>.</li>
 </ul>
-<h2>5 | The state of the field (2025–2026)</h2>
-<h2>What changed and what remains true</h2>
+<h4>5 | The state of the field (2025–2026)</h4>
+<h5>What changed and what remains true</h5>
 <ul>
 <li>
 <p>Tabular foundation models are a real alternative to test, not a blanket replacement for boosted trees. TabPFN reported major gains on small tabular tasks; 2026 surveys describe rapid scaling and new competitors, but model versions, claimed capacity and non-commercial weights vary. Evaluate against strong tuned GBDT on your exact split and compute budget. [2,3]</p>
@@ -400,7 +399,7 @@
 <p>Responsible and efficient ML: segment performance, fairness trade-offs, privacy, consent, security, carbon/energy and inference unit economics. Monitoring and controls should be designed before deployment, not retrofitted.</p>
 </li>
 </ul>
-<h3>Further study — modern developments (2025–2026)</h3>
+<h5>Further study — modern developments (2025–2026)</h5>
 <ul>
 <li><strong>Tabular foundation models:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">TabPFN (Nature)</a> · <a href="https://github.com/PriorLabs/TabPFN">TabPFN repository and model notes</a>.</li>
 <li><strong>Modern gradient boosting:</strong> <a href="https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting">scikit-learn: Histogram-based gradient boosting</a> · <a href="https://catboost.ai/docs/en/">CatBoost documentation</a>.</li>
@@ -410,7 +409,7 @@
 <li><strong>Causal/decision-focused ML:</strong> <a href="https://www.pywhy.org/EconML/">EconML documentation</a> · <a href="https://theeffectbook.net/">The Effect (free book)</a>.</li>
 <li><strong>Responsible ML:</strong> <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI Risk Management Framework</a> · <a href="https://ai.google/responsibility/responsible-ai-practices/">Google Responsible AI Practices</a>.</li>
 </ul>
-<h2>6 | Deployment, MLOps, risk and monitoring</h2>
+<h4>6 | Deployment, MLOps, risk and monitoring</h4>
 <table>
 <thead>
 <tr>
@@ -445,7 +444,7 @@
 </tr>
 </tbody>
 </table>
-<h3>Further study — production and monitoring</h3>
+<h5>Further study — production and monitoring</h5>
 <ul>
 <li><strong>Tracking and reproducibility:</strong> <a href="https://mlflow.org/docs/latest/index.html">MLflow documentation</a> · <a href="https://dvc.org/doc">DVC documentation</a>.</li>
 <li><strong>Serving and rollout:</strong> <a href="https://docs.bentoml.com/">BentoML documentation</a> · <a href="https://kserve.github.io/website/">KServe documentation</a>.</li>
@@ -454,35 +453,31 @@
 <li><strong>Governance and model documentation:</strong> <a href="https://arxiv.org/abs/1810.03993">Model cards paper</a> · <a href="https://www.nist.gov/itl/ai-risk-management-framework">NIST AI RMF</a>.</li>
 <li><strong>Feedback loops and technical debt:</strong> <a href="https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems">Hidden Technical Debt in Machine Learning Systems</a>.</li>
 </ul>
-<h2>7 | Algorithm-selection flowchart and further reading</h2>
+<h4>7 | Algorithm-selection flowchart and further reading</h4>
 <p><strong>Further study:</strong> <a href="https://scikit-learn.org/stable/supervised_learning.html">scikit-learn: supervised learning</a> · <a href="https://developers.google.com/machine-learning/crash-course">Google ML Crash Course</a>.</p>
 <p>Official scikit-learn estimator map (the exact resource requested): the diagram is an interactive/zoomable external SVG. Use it as a quick orientation aid, not a substitute for robust benchmarking. The provided link is preserved below (internet connection required to view).</p>
 <p><strong>Official scikit-learn ML estimator map (SVG):</strong> <a href="https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg">https://scikit-learn.org/stable/_downloads/b82bf6cd7438a351f19fac60fbc0d927/ml_map.svg</a></p>
 <p><strong>Official estimator selection guide:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
 <p><strong>Further study — how to navigate algorithm choices:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">Official selection map</a> · <a href="https://scikit-learn.org/stable/user_guide.html">scikit-learn user guide</a>.</p>
-<h4>References</h4>
-<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png" alt="Normal equation" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*qtdPV-XQhTYACKS7beLDpg.jpeg.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*qtdPV-XQhTYACKS7beLDpg.jpeg.png" alt="Correlation formula" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png" alt="Ridge Regression" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*_6C1R-IamnPtIo0jLOoblw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*_6C1R-IamnPtIo0jLOoblw.png.png" alt="Stochastic gradient descent cost function" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*LYBSxf0MPcERPzkEJlk9Cw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*LYBSxf0MPcERPzkEJlk9Cw.png.png" alt="A Unified Data Infra" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*MqMX4k5IupAK9T9vKs5h8g.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*MqMX4k5IupAK9T9vKs5h8g.png.png" alt="AI and ML Blueprint" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/mvaymymdlhxpalecniyphkibwaqhmboz.jpg"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/mvaymymdlhxpalecniyphkibwaqhmboz.jpg" alt="ML lifecycle" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/20220115104222.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/20220115104222.png" alt="A Unified Data Infra" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fz1sqw361u7Y_D1G-aDEmw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fz1sqw361u7Y_D1G-aDEmw.png.png" alt="Learning Curve example" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*bvk1Esh-TGPCIub2ggNzQg.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*bvk1Esh-TGPCIub2ggNzQg.png.png" alt="Lasso equation" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fekJIBmDHMoU2zQ6wVmQkA.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fekJIBmDHMoU2zQ6wVmQkA.png.png" alt="Ridge Regression" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*HVM4sFhGDTNE40xr5aVCiQ.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*HVM4sFhGDTNE40xr5aVCiQ.png.png" alt="validation curve example" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*TMQs5IMfL3k9OZwy1cck_A.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*TMQs5IMfL3k9OZwy1cck_A.png" alt="Reinforcement learning" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png" alt="Correlation formula" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png" alt="Selecting statistical test. Source: Statistical Rethinking 2. Free Chapter 1" style="width: 100%" loading="lazy"></a>
-<a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*7Vz6m3tqtLAvxF_Xqe2JAQ.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*7Vz6m3tqtLAvxF_Xqe2JAQ.png.png" alt="F-statistic" style="width: 100%" loading="lazy"></a></p>
-<p><strong>[1] scikit-learn, categorical support in HistGradientBoosting:</strong> <a href="https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html">https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html</a></p>
-<p><strong>[2] Hollmann et al., Nature 2025, TabPFN:</strong> <a href="https://doi.org/10.1038/s41586-024-08328-6">https://doi.org/10.1038/s41586-024-08328-6</a></p>
-<p><strong>[3] Current generation of tabular foundation models: critical review (2026):</strong> <a href="https://www.mdpi.com/2504-4990/8/8/244">https://www.mdpi.com/2504-4990/8/8/244</a></p>
-<p><strong>[4] scikit-learn, choosing the right estimator:</strong> <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
-<p><strong>[5] Gorla &amp; Puduppully, ICML 2026, tabular language models generalization:</strong> <a href="https://proceedings.mlr.press/v306/gorla26a.html">https://proceedings.mlr.press/v306/gorla26a.html</a></p>
-<p><strong>[6] Understanding data leakage in real-world ML notebooks (2026):</strong> <a href="https://www.sciencedirect.com/science/article/pii/S0950584926003253">https://www.sciencedirect.com/science/article/pii/S0950584926003253</a></p>
+<h5>References</h5>
+<p>scikit-learn, categorical support in HistGradientBoosting:** <a href="https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html">https://sklearn.org/1.8/auto_examples/ensemble/plot_gradient_boosting_categorical.html</a></p>
+<p>Hollmann et al., Nature 2025, TabPFN:** <a href="https://doi.org/10.1038/s41586-024-08328-6">https://doi.org/10.1038/s41586-024-08328-6</a></p>
+<p>Current generation of tabular foundation models: critical review (2026):** <a href="https://www.mdpi.com/2504-4990/8/8/244">https://www.mdpi.com/2504-4990/8/8/244</a></p>
+<p>scikit-learn, choosing the right estimator:** <a href="https://scikit-learn.org/stable/machine_learning_map.html">https://scikit-learn.org/stable/machine_learning_map.html</a></p>
+<p>Gorla &amp; Puduppully, ICML 2026, tabular language models generalization:** <a href="https://proceedings.mlr.press/v306/gorla26a.html">https://proceedings.mlr.press/v306/gorla26a.html</a></p>
+<p>Understanding data leakage in real-world ML notebooks (2026):** <a href="https://www.sciencedirect.com/science/article/pii/S0950584926003253">https://www.sciencedirect.com/science/article/pii/S0950584926003253</a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*i0ylsCBDeVY5rFlGa9AYWg.png.png" alt="Normal equation" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/rO1H18bCodMa.png" alt="Ridge Regression" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*_6C1R-IamnPtIo0jLOoblw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*_6C1R-IamnPtIo0jLOoblw.png.png" alt="Stochastic gradient descent cost function" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*LYBSxf0MPcERPzkEJlk9Cw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*LYBSxf0MPcERPzkEJlk9Cw.png.png" alt="A Unified Data Infra" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*MqMX4k5IupAK9T9vKs5h8g.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*MqMX4k5IupAK9T9vKs5h8g.png.png" alt="AI and ML Blueprint" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/mvaymymdlhxpalecniyphkibwaqhmboz.jpg"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/mvaymymdlhxpalecniyphkibwaqhmboz.jpg" alt="ML lifecycle" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/20220115104222.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/20220115104222.png" alt="A Unified Data Infra" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fz1sqw361u7Y_D1G-aDEmw.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*fz1sqw361u7Y_D1G-aDEmw.png.png" alt="Learning Curve example" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*HVM4sFhGDTNE40xr5aVCiQ.png.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*HVM4sFhGDTNE40xr5aVCiQ.png.png" alt="validation curve example" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*TMQs5IMfL3k9OZwy1cck_A.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*TMQs5IMfL3k9OZwy1cck_A.png" alt="Reinforcement learning" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/Bf8a4LtHWOrJ.png" alt="Correlation formula" style="width: 100%" loading="lazy"></a></p>
+<p><a href="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png"><img src="https://adamnovotnycom.github.io/adamnovotny-com-staging/theme/images/1*ShYx679GlV5WVL8ukd2j2w.png" alt="Selecting statistical test. Source: Statistical Rethinking 2. Free Chapter 1" style="width: 100%" loading="lazy"></a></p>
             </div>
     
         </div>
